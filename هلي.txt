@@ -1,0 +1,80 @@
+school-system/
+├── index.html
+├── login.html
+├── dashboard.html
+├── css/
+│   └── styles.css
+├── js/
+│   ├── main.js
+│   └── api.js
+├── api/
+│   └── server.js (Express.js أو Laravel أو Django API)
+├── components/
+│   ├── navbar.html
+│   └── sidebar.html
+├── pages/
+│   ├── students.html
+│   ├── teachers.html
+│   ├── schedule.html
+│   ├── grades.html
+│   └── payments.html<!-- students.html -->
+<form id="student-form">
+  <input type="text" id="studentName" placeholder="اسم الطالب" required />
+  <input type="text" id="studentClass" placeholder="الصف" required />
+  <input type="date" id="dob" placeholder="تاريخ الميلاد" required />
+  <button type="submit">تسجيل</button>
+</form>
+
+<script>
+  document.getElementById("student-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("studentName").value;
+    const studentClass = document.getElementById("studentClass").value;
+    const dob = document.getElementById("dob").value;
+
+    await fetch("/api/students", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, class: studentClass, dob }),
+    });
+    alert("تم تسجيل الطالب بنجاح ✔️");
+  });
+</script>
+<form id="student-form">
+  <input type="text" id="name" required placeholder="اسم الطالب" />
+  <input type="text" id="section" required placeholder="الصف/الفصل" />
+  <input type="date" id="dob" required placeholder="تاريخ الميلاد" />
+  <button type="submit">تسجيل</button>
+</form>
+
+<script src="api.js"></script>
+<script>
+  document.getElementById('student-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = {
+      name: e.target.name.value,
+      section: e.target.section.value,
+      dob: e.target.dob.value
+    };
+    const resp = await api.post('/students', data);
+    if (resp.success) alert(' ✅ تم تسجيل الطالب بنجاح');
+    else alert('❗ ' + resp.error);
+  });
+</script>
+const api = {
+  baseUrl: '/api',
+  async post(path, data) {
+    const resp = await fetch(this.baseUrl + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    });
+    return resp.json();
+  },
+  async get(path) {
+    const resp = await fetch(this.baseUrl + path, { credentials: 'include' });
+    return resp.json();
+  }
+};
+
